@@ -1,5 +1,15 @@
+import { BrowserRouter, Routes, Route } from "react-router";
+
+import Login from "./pages/Login/Login";
+
 function App() {
-  return <h1>hello</h1>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
