@@ -48,7 +48,7 @@ function Sidebar() {
             className={styles.collapseToggle}
             onClick={() => setCollapsed(!collapsed)}
           >
-            {!mobileOpen ? (
+            {mobileOpen ? (
               collapsed ? (
                 <ChevronRight size={20} />
               ) : (

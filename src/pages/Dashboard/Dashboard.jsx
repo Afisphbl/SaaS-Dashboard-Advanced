@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import Sidebar from "../../components/SideBar/Sidebar";
 import { useLocation, useNavigate } from "react-router";
 
 function Dashboard() {
@@ -12,11 +11,7 @@ function Dashboard() {
       navigate("/dashboard", { replace: true });
     }
   }, [navigate, currentPath]);
-  return (
-    <div>
-      <Sidebar />
-    </div>
-  );
+  return <div>Dashboard</div>;
 }
 
 export default Dashboard;
