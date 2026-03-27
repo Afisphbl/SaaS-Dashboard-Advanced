@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import { LockIcon, LogInIcon, Mail, Loader } from "lucide-react";
-import { login, googleSignIn, githubSignIn } from "../../api/auth";
+import { signUp } from "../../api/auth";
 import InputGroup from "../../components/input/InputGroup";
-import styles from "./Login.module.css";
-import { useRef, useState } from "react";
+import styles from "../Login/Login.module.css";
+import { useEffect, useRef, useState } from "react";
 import { useToast } from "../../context/ToastContext";
 import { useNavigate } from "react-router";
 
-function Login() {
+function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [cPassword, setCPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const emailRef = useRef(null);
@@ -17,13 +18,23 @@ function Login() {
 
   const { addToast } = useToast();
 
+  useEffect(() => {
+    let timer;
+    if (error) {
+      timer = setInterval(() => {
+        setError(null);
+      }, 3000);
+    }
+    return () => clearInterval(timer);
+  }, [error]);
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
-    if (!email) {
-      setError("Email is required");
+    if (!email || !email.trim().endsWith("@gmail.com")) {
+      setError("Please enter a valid Gmail address");
       emailRef.current.focus();
-      addToast("Email is required", "error");
+      addToast("Please enter a valid Gmail address", "error");
       return;
     }
 
@@ -36,43 +47,34 @@ function Login() {
       return;
     }
 
+    if (cPassword !== password) {
+      setError("Passwords do not match");
+      addToast("Passwords do not match", "error");
+      return;
+    }
+
     setLoading(true);
     try {
-      const { error } = await login(email, password);
+      const { error } = await signUp(email, password);
       if (error) throw new Error(error);
-      addToast("Logged in successfully", "success");
-      navigate("/");
+      addToast("Account created successfully", "success");
+      navigate("/login");
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       setError(message);
-      addToast(`Login failed: ${message}`, "error");
+      addToast(`Sign-up failed: ${message}`, "error");
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleGoogleSignIn() {
-    const { error } = await googleSignIn();
-    if (error) {
-      addToast(`Google sign-in failed: ${error.message}`, "error");
-    }
-  }
-
-  async function handleGitHubSignIn() {
-    const { error } = await githubSignIn();
-    if (error) {
-      addToast(`GitHub sign-in failed: ${error.message}`, "error");
-    }
-  }
   return (
     <div className={styles.container}>
       <div className={styles.card}>
         <header className={styles.header}>
           <div className={styles.logo}></div>
-          <h1 className={styles.title}>Welcome Back</h1>
-          <p className={styles.subtitle}>
-            Enter your details to access your account
-          </p>
+          <h1 className={styles.title}>Create Account</h1>
+          <p className={styles.subtitle}>Sign up to get started</p>
         </header>
 
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -96,15 +98,9 @@ function Login() {
           </InputGroup>
 
           <InputGroup className={styles.inputGroup}>
-            <div className={styles.passwordHeader}>
-              <label htmlFor="password" className={styles.label}>
-                Password
-              </label>
-
-              <a href="#" className={styles.forgotLink}>
-                Forgot Password?
-              </a>
-            </div>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
 
             <div className={styles.inputWrapper}>
               <LockIcon size={20} className={styles.inputIcon} />
@@ -119,11 +115,22 @@ function Login() {
             </div>
           </InputGroup>
 
-          <InputGroup className={styles.rememberGroup}>
-            <input type="checkbox" id="remember" className={styles.checkbox} />
-            <label htmlFor="remember" className={styles.rememberLabel}>
-              Remember for 30 days
+          <InputGroup className={styles.inputGroup}>
+            <label htmlFor="cPassword" className={styles.label}>
+              Confirm Password
             </label>
+
+            <div className={styles.inputWrapper}>
+              <LockIcon size={20} className={styles.inputIcon} />
+              <input
+                type="password"
+                id="cPassword"
+                className={styles.input}
+                placeholder={`${Array(8).fill("•").join("")}`}
+                value={cPassword}
+                onChange={(e) => setCPassword(e.target.value)}
+              />
+            </div>
           </InputGroup>
 
           {error && <div className={styles.error}>{error}</div>}
@@ -138,7 +145,7 @@ function Login() {
             ) : (
               <>
                 <LogInIcon size={20} />
-                Sign In
+                Sign Up
               </>
             )}
           </button>
@@ -148,20 +155,10 @@ function Login() {
           <span className={styles.dividerText}>OR</span>
         </div>
 
-        <div className={styles.oauthGroup}>
-          <button className={styles.oauthButton} onClick={handleGoogleSignIn}>
-            Google
-          </button>
-          <button className={styles.oauthButton} onClick={handleGitHubSignIn}>
-            {/* <GitHub size={20} /> */}
-            GitHub
-          </button>
-        </div>
-
         <footer className={styles.footer}>
-          Don't have an account?{" "}
-          <Link to="/signup" className={styles.signupLink}>
-            Sign up
+          Already have an account?{" "}
+          <Link to="/login" className={styles.signupLink}>
+            Log in
           </Link>
         </footer>
       </div>
@@ -169,4 +166,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;
