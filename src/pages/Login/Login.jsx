@@ -50,14 +50,18 @@ function Login() {
     }
   }
 
-  function handleGoogleSignIn() {
-    googleSignIn();
-    navigate("/");
+  async function handleGoogleSignIn() {
+    const { error } = await googleSignIn();
+    if (error) {
+      addToast(`Google sign-in failed: ${error.message}`, "error");
+    }
   }
 
-  function handleGitHubSignIn() {
-    githubSignIn();
-    navigate("/");
+  async function handleGitHubSignIn() {
+    const { error } = await githubSignIn();
+    if (error) {
+      addToast(`GitHub sign-in failed: ${error.message}`, "error");
+    }
   }
   return (
     <div className={styles.container}>
