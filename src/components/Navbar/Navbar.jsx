@@ -18,14 +18,29 @@ function Navbar() {
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.iconButton} onClick={toggleTheme}>
+        <button
+          type="button"
+          aria-label="Toggle theme"
+          className={styles.iconButton}
+          onClick={toggleTheme}
+        >
           {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
         </button>
-        <button className={styles.iconButton}>
+        <button
+          type="button"
+          aria-label="Notifications"
+          className={styles.iconButton}
+        >
+          {" "}
           <Bell size={20} />
           <span className={styles.notificationBadge}>3</span>
         </button>
-        <button className={`${styles.iconButton} ${styles.avatarButton}`}>
+        <button
+          type="button"
+          aria-label="Open user menu"
+          className={`${styles.iconButton} ${styles.avatarButton}`}
+        >
+          {" "}
           <User size={20} />
         </button>
       </div>

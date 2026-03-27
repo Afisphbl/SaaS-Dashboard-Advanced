@@ -3,7 +3,7 @@ import { ToastProvider } from "./context/ToastContext";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
-import Sidebar from "../src/components/Sidebar/Sidebar";
+import Sidebar from "./components/Sidebar/Sidebar";
 import Navbar from "./components/Navbar/Navbar";
 import { ThemeProvider } from "./context/ThemeContext";
 

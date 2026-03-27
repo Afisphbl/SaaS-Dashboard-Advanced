@@ -6,7 +6,12 @@ function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
-      return JSON.parse(savedTheme);
+      try {
+        const parsed = JSON.parse(savedTheme);
+        if (parsed === "light" || parsed === "dark") return parsed;
+      } catch {
+        return "light";
+      }
     }
     return "light";
   });
