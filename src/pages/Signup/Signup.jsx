@@ -21,11 +21,11 @@ function Signup() {
   useEffect(() => {
     let timer;
     if (error) {
-      timer = setInterval(() => {
+      timer = setTimeout(() => {
         setError(null);
       }, 3000);
     }
-    return () => clearInterval(timer);
+    return () => clearTimeout(timer);
   }, [error]);
 
   async function handleSubmit(e) {

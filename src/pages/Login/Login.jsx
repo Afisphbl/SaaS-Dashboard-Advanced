@@ -3,7 +3,7 @@ import { LockIcon, LogInIcon, Mail, Loader } from "lucide-react";
 import { login, googleSignIn, githubSignIn } from "../../api/auth";
 import InputGroup from "../../components/input/InputGroup";
 import styles from "./Login.module.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useToast } from "../../context/ToastContext";
 import { useNavigate } from "react-router";
 
@@ -16,6 +16,16 @@ function Login() {
   const navigate = useNavigate();
 
   const { addToast } = useToast();
+
+  useEffect(() => {
+    let timer;
+    if (error) {
+      timer = setTimeout(() => {
+        setError(null);
+      }, 3000);
+    }
+    return () => clearTimeout(timer);
+  }, [error]);
 
   async function handleSubmit(e) {
     e.preventDefault();
