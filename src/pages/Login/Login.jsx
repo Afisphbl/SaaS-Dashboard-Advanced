@@ -4,6 +4,7 @@ import InputGroup from "../../components/input/InputGroup";
 import styles from "./Login.module.css";
 import { useRef, useState } from "react";
 import { useToast } from "../../context/ToastContext";
+import { useNavigate } from "react-router";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ function Login() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const emailRef = useRef(null);
+  const navigate = useNavigate();
 
   const { addToast } = useToast();
 
@@ -37,6 +39,7 @@ function Login() {
       const { error } = await login(email, password);
       if (error) throw new Error(error);
       addToast("Logged in successfully", "success");
+      navigate("/");
     } catch (err) {
       addToast(`Login failed: ${err.message}`, "error");
     } finally {
