@@ -16,6 +16,7 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError(null);
     if (!email) {
       setError("Email is required");
       emailRef.current.focus();
@@ -38,7 +39,9 @@ function Login() {
       if (error) throw new Error(error);
       addToast("Logged in successfully", "success");
     } catch (err) {
-      addToast(`Login failed: ${err.message}`, "error");
+      const message = err instanceof Error ? err.message : String(err);
+      +setError(message);
+      +addToast(`Login failed: ${message}`, "error");
     } finally {
       setLoading(false);
     }

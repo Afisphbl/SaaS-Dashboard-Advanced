@@ -10,16 +10,22 @@
   min-width: 300px;
   max-width: 400px;
   pointer-events: auto;
-  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   border-left: 4px solid transparent;
 }
 
-.toast.success { border-left-color: var(--color-success); }
-.toast.error { border-left-color: var(--color-error); }
-.toast.info { border-left-color: var(--color-secondary); }
+.toast.success {
+  border-left-color: var(--color-success);
+}
+.toast.error {
+  border-left-color: var(--color-error);
+}
+.toast.info {
+  border-left-color: var(--color-secondary);
+}
 
 .closing {
-  animation: slideOut 0.3s ease-in forwards;
+  animation: slide-out 0.3s ease-in forwards;
 }
 
 .iconContainer {
@@ -27,9 +33,15 @@
   align-items: center;
 }
 
-.iconSuccess { color: var(--color-success); }
-.iconError { color: var(--color-error); }
-.iconInfo { color: var(--color-secondary); }
+.iconSuccess {
+  color: var(--color-success);
+}
+.iconError {
+  color: var(--color-error);
+}
+.iconInfo {
+  color: var(--color-secondary);
+}
 
 .message {
   flex: 1;
@@ -43,7 +55,9 @@
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .closeButton:hover {
@@ -51,7 +65,7 @@
   color: var(--color-text-primary);
 }
 
-@keyframes slideIn {
+@keyframes slide-in {
   from {
     transform: translateX(100%);
     opacity: 0;
@@ -62,7 +76,7 @@
   }
 }
 
-@keyframes slideOut {
+@keyframes slide-out {
   from {
     transform: translateX(0);
     opacity: 1;

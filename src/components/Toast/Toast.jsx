@@ -31,8 +31,13 @@ export function Toast({ message, type = "info", duration = 3000, onClose }) {
   return (
     <div
       className={`${styles.toast} ${styles[type]} ${isClosing ? styles.closing : ""}`}
+      role={type === "error" ? "alert" : "status"}
+      aria-live={type === "error" ? "assertive" : "polite"}
+      aria-atomic="true"
     >
-      <div className={styles.iconContainer}>{icons[type]}</div>
+      <div className={styles.iconContainer} aria-hidden="true">
+        {icons[type]}
+      </div>{" "}
       <div className={styles.message}>{message}</div>
       <button
         className={styles.closeButton}
