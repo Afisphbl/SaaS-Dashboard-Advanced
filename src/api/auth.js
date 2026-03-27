@@ -6,8 +6,27 @@ export const login = async (email, password) => {
     password,
   });
 
-  console.log("Data:", data);
-  console.log("Error:", error);
+  return { data, error };
+};
+
+export const googleSignIn = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${window.location.origin}/`,
+    },
+  });
+
+  return { data, error };
+};
+
+export const githubSignIn = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "github",
+    options: {
+      redirectTo: `${window.location.origin}/`,
+    },
+  });
 
   return { data, error };
 };

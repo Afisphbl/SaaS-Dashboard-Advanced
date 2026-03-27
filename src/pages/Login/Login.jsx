@@ -1,5 +1,5 @@
 import { LockIcon, LogInIcon, Mail, Loader } from "lucide-react";
-import { login } from "../../api/auth";
+import { login, googleSignIn, githubSignIn } from "../../api/auth";
 import InputGroup from "../../components/input/InputGroup";
 import styles from "./Login.module.css";
 import { useRef, useState } from "react";
@@ -18,6 +18,7 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError(null);
     if (!email) {
       setError("Email is required");
       emailRef.current.focus();
@@ -41,9 +42,25 @@ function Login() {
       addToast("Logged in successfully", "success");
       navigate("/");
     } catch (err) {
-      addToast(`Login failed: ${err.message}`, "error");
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message);
+      addToast(`Login failed: ${message}`, "error");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    const { error } = await googleSignIn();
+    if (error) {
+      addToast(`Google sign-in failed: ${error.message}`, "error");
+    }
+  }
+
+  async function handleGitHubSignIn() {
+    const { error } = await githubSignIn();
+    if (error) {
+      addToast(`GitHub sign-in failed: ${error.message}`, "error");
     }
   }
   return (
@@ -131,8 +148,10 @@ function Login() {
         </div>
 
         <div className={styles.oauthGroup}>
-          <button className={styles.oauthButton}>Google</button>
-          <button className={styles.oauthButton}>
+          <button className={styles.oauthButton} onClick={handleGoogleSignIn}>
+            Google
+          </button>
+          <button className={styles.oauthButton} onClick={handleGitHubSignIn}>
             {/* <GitHub size={20} /> */}
             GitHub
           </button>
