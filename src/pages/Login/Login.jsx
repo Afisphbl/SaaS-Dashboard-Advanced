@@ -1,9 +1,10 @@
 import { LockIcon, LogInIcon, Mail, Loader } from "lucide-react";
-import { login } from "../../api/auth";
+import { login, googleSignIn, githubSignIn } from "../../api/auth";
 import InputGroup from "../../components/input/InputGroup";
 import styles from "./Login.module.css";
 import { useRef, useState } from "react";
 import { useToast } from "../../context/ToastContext";
+import { useNavigate } from "react-router";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ function Login() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const emailRef = useRef(null);
+  const navigate = useNavigate();
 
   const { addToast } = useToast();
 
@@ -38,13 +40,24 @@ function Login() {
       const { error } = await login(email, password);
       if (error) throw new Error(error);
       addToast("Logged in successfully", "success");
+      navigate("/");
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      +setError(message);
-      +addToast(`Login failed: ${message}`, "error");
+      setError(message);
+      addToast(`Login failed: ${message}`, "error");
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleGoogleSignIn() {
+    googleSignIn();
+    navigate("/");
+  }
+
+  function handleGitHubSignIn() {
+    githubSignIn();
+    navigate("/");
   }
   return (
     <div className={styles.container}>
@@ -131,8 +144,10 @@ function Login() {
         </div>
 
         <div className={styles.oauthGroup}>
-          <button className={styles.oauthButton}>Google</button>
-          <button className={styles.oauthButton}>
+          <button className={styles.oauthButton} onClick={handleGoogleSignIn}>
+            Google
+          </button>
+          <button className={styles.oauthButton} onClick={handleGitHubSignIn}>
             {/* <GitHub size={20} /> */}
             GitHub
           </button>
