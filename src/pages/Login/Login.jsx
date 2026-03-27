@@ -1,8 +1,48 @@
-import { LockIcon, LogInIcon, Mail } from "lucide-react";
+import { LockIcon, LogInIcon, Mail, Loader } from "lucide-react";
+import { login } from "../../api/auth";
 import InputGroup from "../../components/input/InputGroup";
 import styles from "./Login.module.css";
+import { useRef, useState } from "react";
+import { useToast } from "../../context/ToastContext";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const emailRef = useRef(null);
+
+  const { addToast } = useToast();
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!email) {
+      setError("Email is required");
+      emailRef.current.focus();
+      addToast("Email is required", "error");
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      setError("Password is required and must be at least 6 characters long");
+      addToast(
+        "Password is required and must be at least 6 characters long",
+        "error",
+      );
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await login(email, password);
+      if (error) throw new Error(error);
+      addToast("Logged in successfully", "success");
+    } catch (err) {
+      addToast(`Login failed: ${err.message}`, "error");
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -14,7 +54,7 @@ function Login() {
           </p>
         </header>
 
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <InputGroup className={styles.inputGroup}>
             <label htmlFor="email" className={styles.label}>
               Email
@@ -23,10 +63,13 @@ function Login() {
             <div className={styles.inputWrapper}>
               <Mail size={20} className={styles.inputIcon} />
               <input
+                ref={emailRef}
                 type="email"
                 id="email"
                 className={styles.input}
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </InputGroup>
@@ -49,6 +92,8 @@ function Login() {
                 id="password"
                 className={styles.input}
                 placeholder={`${Array(8).fill("•").join("")}`}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </InputGroup>
@@ -60,9 +105,21 @@ function Login() {
             </label>
           </InputGroup>
 
-          <button type="submit" className={styles.submitButton}>
-            <LogInIcon size={20} />
-            Sign In
+          {error && <div className={styles.error}>{error}</div>}
+
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={loading}
+          >
+            {loading ? (
+              <Loader size={20} className={styles.loader} />
+            ) : (
+              <>
+                <LogInIcon size={20} />
+                Sign In
+              </>
+            )}
           </button>
         </form>
 
