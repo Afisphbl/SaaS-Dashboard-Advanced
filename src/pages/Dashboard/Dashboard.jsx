@@ -1,5 +1,22 @@
+import { useEffect } from "react";
+import Sidebar from "../../components/SideBar/Sidebar";
+import { useLocation, useNavigate } from "react-router";
+
 function Dashboard() {
-  return <div>DashBoard</div>;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  useEffect(() => {
+    if (currentPath === "/") {
+      navigate("/dashboard");
+    }
+  }, [navigate, currentPath]);
+  return (
+    <div>
+      <Sidebar />
+    </div>
+  );
 }
 
 export default Dashboard;
