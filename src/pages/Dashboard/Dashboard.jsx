@@ -9,7 +9,7 @@ function Dashboard() {
 
   useEffect(() => {
     if (currentPath === "/") {
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     }
   }, [navigate, currentPath]);
   return (

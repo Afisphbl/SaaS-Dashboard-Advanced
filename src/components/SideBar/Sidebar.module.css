@@ -34,7 +34,11 @@
   width: 32px;
   height: 32px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-secondary)
+  );
   flex-shrink: 0;
 }
 
@@ -129,7 +133,7 @@
   display: none;
   position: fixed;
   inset: 0;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
   z-index: 30;
   opacity: 0;
@@ -140,6 +144,7 @@
   .sidebar {
     position: fixed;
     transform: translateX(-100%);
+    transition: transform var(--transition-normal);
   }
 
   .sidebar.mobileOpen {
