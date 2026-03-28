@@ -1,0 +1,76 @@
+.chartContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.svg {
+  width: 100%;
+  height: calc(100% - 24px);
+  overflow: visible;
+}
+
+.gridLine {
+  stroke: var(--color-border);
+  stroke-width: 0.5px;
+  stroke-dasharray: 2 2;
+}
+
+.lineStroke {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: drawLine 1.5s ease-out forwards;
+}
+
+.areaFill {
+  fill: rgba(99, 102, 241, 0.1); /* Primary color low opacity */
+  stroke: none;
+  animation: fadeIn 1.5s ease-out forwards;
+}
+
+.point {
+  fill: var(--color-surface);
+  stroke: var(--color-primary);
+  stroke-width: 1px;
+  cursor: pointer;
+  transition: r var(--transition-fast), fill var(--transition-fast);
+}
+
+.point:hover {
+  r: 2.5;
+  fill: var(--color-primary);
+}
+
+.labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+@keyframes drawLine {
+  from { stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+  to { stroke-dasharray: 1000; stroke-dashoffset: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

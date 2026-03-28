@@ -7,16 +7,16 @@ import { ToastProvider } from "./context/ToastContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { AdminRoute } from "./routes/AdminRoute";
 import { Loader } from "./components/Loader/Loader";
-import { Sidebar } from "./components/SideBar/Sidebar";
+import { Sidebar } from "./components/Sidebar/Sidebar";
 import { Navbar } from "./components/Navbar/Navbar";
 
 // Lazy load pages for performance
 const Login = lazy(() => import("./pages/Login/Login"));
 const Signup = lazy(() => import("./pages/Signup/Signup"));
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
-// const Users = lazy(() => import("./pages/Users/Users"));
-// const Profile = lazy(() => import("./pages/Profile/Profile"));
-// const Settings = lazy(() => import("./pages/Settings/Settings"));
+const Users = lazy(() => import("./pages/Users/Users"));
+const Profile = lazy(() => import("./pages/Profile/Profile"));
+const Settings = lazy(() => import("./pages/Settings/Settings"));
 
 // App Layout for authenticated routes
 function AppLayout() {
@@ -82,12 +82,12 @@ function App() {
                 <Route element={<ProtectedRoute />}>
                   <Route element={<LayoutWrapper />}>
                     <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/profile" element={<p>Profile Page</p>} />
-                    <Route path="/settings" element={<p>Settings Page</p>} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/settings" element={<Settings />} />
 
                     {/* Admin Only Route */}
                     <Route element={<AdminRoute />}>
-                      <Route path="/users" element={<p>Users Page</p>} />
+                      <Route path="/users" element={<Users />} />
                     </Route>
 
                     {/* Default Redirect */}
