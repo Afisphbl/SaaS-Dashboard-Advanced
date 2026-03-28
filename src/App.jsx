@@ -1,41 +1,107 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ToastProvider } from "./context/ToastContext";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import Login from "./pages/Login/Login";
-import Signup from "./pages/Signup/Signup";
-import Sidebar from "./components/Sidebar/Sidebar";
-import Navbar from "./components/Navbar/Navbar";
+import React, { Suspense, lazy } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { UserProvider } from "./context/UserContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ToastProvider } from "./context/ToastContext";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
+import { AdminRoute } from "./routes/AdminRoute";
+import { Loader } from "./components/Loader/Loader";
+import { Sidebar } from "./components/SideBar/Sidebar";
+import { Navbar } from "./components/Navbar/Navbar";
+
+// Lazy load pages for performance
+const Login = lazy(() => import("./pages/Login/Login"));
+const Signup = lazy(() => import("./pages/Signup/Signup"));
+const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
+// const Users = lazy(() => import("./pages/Users/Users"));
+// const Profile = lazy(() => import("./pages/Profile/Profile"));
+// const Settings = lazy(() => import("./pages/Settings/Settings"));
+
+// App Layout for authenticated routes
+function AppLayout() {
+  return (
+    <div className="app-layout">
+      <Sidebar />
+      <div className="main-content-wrapper">
+        <Navbar />
+        <main className="main-content">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// We will extract AppLayout structure inside ProtectedRoute, or just use it as a wrapper Route
+import { Outlet } from "react-router-dom";
+
+function LayoutWrapper() {
+  return (
+    <div className="app-layout">
+      <Sidebar />
+      <div className="main-content-wrapper">
+        <Navbar />
+        <main className="main-content">
+          <Suspense fallback={<Loader fullScreen />}>
+            <Outlet />
+          </Suspense>
+        </main>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   return (
     <ThemeProvider>
-      <div className="app-layout">
-        <ToastProvider>
-          <BrowserRouter>
-            <Sidebar />
-            <div className="main-content-wrapper">
-              <Navbar />
-              <div className="main-content">
-                <Routes>
-                  <Route index element={<Dashboard />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route
-                    path="/profile"
-                    element={<div>Profile (Coming Soon)</div>}
-                  />
-                  <Route
-                    path="/settings"
-                    element={<div>Settings (Coming Soon)</div>}
-                  />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                </Routes>
-              </div>
-            </div>
-          </BrowserRouter>
-        </ToastProvider>
-      </div>
+      <ToastProvider>
+        <AuthProvider>
+          <UserProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Public Routes */}
+                <Route
+                  path="/login"
+                  element={
+                    <Suspense fallback={<Loader fullScreen />}>
+                      <Login />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="/signup"
+                  element={
+                    <Suspense fallback={<Loader fullScreen />}>
+                      <Signup />
+                    </Suspense>
+                  }
+                />
+
+                {/* Protected Routes nested in Layout */}
+                <Route element={<ProtectedRoute />}>
+                  <Route element={<LayoutWrapper />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/profile" element={<p>Profile Page</p>} />
+                    <Route path="/settings" element={<p>Settings Page</p>} />
+
+                    {/* Admin Only Route */}
+                    <Route element={<AdminRoute />}>
+                      <Route path="/users" element={<p>Users Page</p>} />
+                    </Route>
+
+                    {/* Default Redirect */}
+                    <Route
+                      path="*"
+                      element={<Navigate to="/dashboard" replace />}
+                    />
+                  </Route>
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </UserProvider>
+        </AuthProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 }
